@@ -861,8 +861,20 @@ textarea {
   margin: 0;
 }
 
-.other-input {
+.other-field {
   margin-top: 2px;
+}
+
+.other-field[hidden] {
+  display: none;
+}
+
+.other-input {
+  margin-top: 0;
+}
+
+.public-question .hint {
+  margin: 12px 0 0;
 }
 
 /* Thanks */

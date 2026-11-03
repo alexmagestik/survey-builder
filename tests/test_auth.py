@@ -59,3 +59,9 @@ def test_login_page_has_csrf_token(client):
     response = client.get("/auth/login")
     assert response.status_code == 200
     assert len(csrf(response)) > 10
+
+
+def test_models_probe_returns_empty_list(client):
+    response = client.get("/v1/models")
+    assert response.status_code == 200
+    assert response.json() == {"object": "list", "data": []}

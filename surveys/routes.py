@@ -182,10 +182,16 @@ def _build_submitted(survey, form, name: str) -> dict:
         if question.type == "text":
             text[str(question.id)] = _value(form, f"q_{question.id}")
         else:
-            values[str(question.id)] = [
+            selected = [
                 str(value) for value in form.getlist(f"q_{question.id}")
             ]
-            other[str(question.id)] = _value(form, f"q_{question.id}_other")
+            other_text = _value(form, f"q_{question.id}_other")
+            # Показываем поле «Свой вариант» после ошибки валидации, если
+            # пользователь ввёл текст, но не отметил пункт «Другое».
+            if other_text and not selected:
+                selected.append("other")
+            values[str(question.id)] = selected
+            other[str(question.id)] = other_text
     return {"name": name, "values": values, "other": other, "text": text}
 
 

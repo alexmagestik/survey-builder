@@ -332,6 +332,12 @@ def validate_submission(survey: Survey, form: Any) -> tuple[str, list[dict], lis
             if option_id not in selected_ids:
                 selected_ids.append(option_id)
 
+        # Если текст «Своего варианта» заполнен, а обычные варианты не выбраны,
+        # считаем «Другое» выбранным. Это защищает от потери ответа, когда
+        # пользователь ввёл текст, но забыл отметить пункт «Другое».
+        if other_text and question.allow_other and not selected_ids:
+            other_selected = True
+
         if question.type == "single" and len(selected_ids) > 1:
             errors.append(f"В вопросе «{question.text}» можно выбрать только один вариант.")
         if question.type == "single" and selected_ids and other_selected:

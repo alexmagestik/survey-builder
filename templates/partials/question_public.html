@@ -22,7 +22,9 @@
           <input type="radio" name="q_{{ q.id }}" value="other" aria-label="Другое" {% if q.required %}required{% endif %} {% if 'other' in qvals %}checked{% endif %}>
           <span>Другое</span>
         </label>
-        <input class="other-input" type="text" name="q_{{ q.id }}_other" value="{{ other_val }}" placeholder="Ваш вариант" aria-label="Свой вариант ответа" maxlength="200">
+        <div class="other-field" data-other-field {% if 'other' not in qvals %}hidden{% endif %}>
+          <input class="other-input" type="text" name="q_{{ q.id }}_other" value="{{ other_val }}" placeholder="Ваш вариант" aria-label="Свой вариант ответа" maxlength="200">
+        </div>
       {% endif %}
     </div>
   {% elif q.type == 'multiple' %}
@@ -38,7 +40,9 @@
           <input type="checkbox" name="q_{{ q.id }}" value="other" aria-label="Другое" {% if 'other' in qvals %}checked{% endif %}>
           <span>Другое</span>
         </label>
-        <input class="other-input" type="text" name="q_{{ q.id }}_other" value="{{ other_val }}" placeholder="Ваш вариант" aria-label="Свой вариант ответа" maxlength="200">
+        <div class="other-field" data-other-field {% if 'other' not in qvals %}hidden{% endif %}>
+          <input class="other-input" type="text" name="q_{{ q.id }}_other" value="{{ other_val }}" placeholder="Ваш вариант" aria-label="Свой вариант ответа" maxlength="200">
+        </div>
       {% endif %}
     </div>
     <p class="hint">Можно выбрать несколько вариантов.</p>

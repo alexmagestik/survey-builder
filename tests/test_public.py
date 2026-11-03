@@ -122,6 +122,60 @@ def test_inactive_survey_returns_404(client):
     assert client.get(f"/survey/{slug}").status_code == 404
 
 
+def test_other_field_is_hidden_until_other_selected(client):
+    register(client)
+    created = create_survey(client, allow_other=True)
+    slug, _, _, _ = _survey_parts(_created_id(created))
+
+    page = client.get(f"/survey/{slug}")
+    assert page.status_code == 200
+    assert "data-other-field hidden" in page.text
+    assert "Ваш вариант" in page.text
+
+
+def test_other_text_without_checkbox_is_accepted(client):
+    register(client)
+    created = create_survey(client, allow_other=True)
+    survey_id = _created_id(created)
+    slug, q0_id, q1_id, _ = _survey_parts(survey_id)
+
+    response = submit_survey(
+        client,
+        slug,
+        {
+            "respondent_name": "Анна",
+            f"q_{q0_id}_other": "Мятный",
+            f"q_{q1_id}": "",
+        },
+    )
+    assert response.status_code == 303
+
+    with SessionLocal() as db:
+        survey = db.scalar(select(Survey).where(Survey.slug == slug))
+        row = db.scalar(select(Response).where(Response.survey_id == survey.id))
+        values = [
+            answer.text_value
+            for answer in row.answers
+            if answer.question_id == q0_id
+        ]
+        assert values == ["Мятный"]
+
+
+def test_other_selected_without_text_is_rejected(client):
+    register(client)
+    created = create_survey(client, allow_other=True)
+    slug, q0_id, _, _ = _survey_parts(_created_id(created))
+
+    response = submit_survey(
+        client,
+        slug,
+        {"respondent_name": "Анна", f"q_{q0_id}": "other"},
+    )
+    assert response.status_code == 400
+    assert "Укажите свой вариант" in response.text
+    assert "data-other-field hidden" not in response.text
+
+
 def test_quiz_scores_correct_answers(client):
     register(client)
     created = create_survey(client, title="Мини-тест", scoring=True)

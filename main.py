@@ -67,6 +67,12 @@ def health():
     return {"status": "ok"}
 
 
+@app.get("/v1/models", include_in_schema=False)
+def models_probe():
+    """Служебная заглушка для клиентов, проверяющих OpenAI-совместимый API."""
+    return {"object": "list", "data": []}
+
+
 @app.get("/", name="index")
 def index(
     request: Request,

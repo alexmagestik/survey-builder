@@ -45,7 +45,12 @@ def logout(client):
     )
 
 
-def create_survey(client, title: str = "Тестовый опрос", scoring: bool = False):
+def create_survey(
+    client,
+    title: str = "Тестовый опрос",
+    scoring: bool = False,
+    allow_other: bool = False,
+):
     response = client.get("/surveys/new")
     data = {
         "csrf_token": csrf(response),
@@ -63,6 +68,8 @@ def create_survey(client, title: str = "Тестовый опрос", scoring: b
     if scoring:
         data["scoring_enabled"] = "1"
         data["questions-0-options-0-correct"] = "1"
+    if allow_other:
+        data["questions-0-allow-other"] = "1"
     return client.post("/surveys", data=data, follow_redirects=False)
 
 
