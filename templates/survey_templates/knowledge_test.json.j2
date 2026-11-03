@@ -1,0 +1,64 @@
+{
+  "key": "knowledge_test",
+  "name": "Тестирование знаний",
+  "title": {{ "Тест по основам Python" | tojson }},
+  "description": {{ "Пять вопросов для проверки базовых знаний Python. За каждый вопрос с выбором можно получить один балл." | tojson }},
+  "scoring": true,
+  "questions": [
+    {
+      "text": {{ "Что такое Python?" | tojson }},
+      "type": "single",
+      "required": true,
+      "allow_other": false,
+      "options": [
+        {"text": {{ "Язык программирования" | tojson }}, "correct": true},
+        {"text": {{ "Система управления базами данных" | tojson }}, "correct": false},
+        {"text": {{ "Операционная система" | tojson }}, "correct": false},
+        {"text": {{ "Текстовый редактор" | tojson }}, "correct": false}
+      ]
+    },
+    {
+      "text": {{ "Какой тип данных хранит значения True и False?" | tojson }},
+      "type": "single",
+      "required": true,
+      "allow_other": false,
+      "options": [
+        {"text": {{ "int" | tojson }}, "correct": false},
+        {"text": {{ "str" | tojson }}, "correct": false},
+        {"text": {{ "bool" | tojson }}, "correct": true},
+        {"text": {{ "list" | tojson }}, "correct": false}
+      ]
+    },
+    {
+      "text": {{ "Что вернёт выражение len(\"abc\")?" | tojson }},
+      "type": "single",
+      "required": true,
+      "allow_other": false,
+      "options": [
+        {"text": {{ "2" | tojson }}, "correct": false},
+        {"text": {{ "3" | tojson }}, "correct": true},
+        {"text": {{ "\"abc\"" | tojson }}, "correct": false},
+        {"text": {{ "Ошибку" | tojson }}, "correct": false}
+      ]
+    },
+    {
+      "text": {{ "Какие из перечисленных типов являются изменяемыми (mutable)?" | tojson }},
+      "type": "multiple",
+      "required": true,
+      "allow_other": false,
+      "options": [
+        {"text": {{ "list" | tojson }}, "correct": true},
+        {"text": {{ "tuple" | tojson }}, "correct": false},
+        {"text": {{ "dict" | tojson }}, "correct": true},
+        {"text": {{ "set" | tojson }}, "correct": true}
+      ]
+    },
+    {
+      "text": {{ "Опишите своими словами, что такое переменная." | tojson }},
+      "type": "text",
+      "required": false,
+      "allow_other": false,
+      "options": []
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}Вход — Survey Builder{% endblock %}
+
+{% block content %}
+<div class="auth-wrap">
+  <div class="card auth-card">
+    <h1>Вход</h1>
+    <p class="muted">Войдите, чтобы создавать опросы и смотреть статистику.</p>
+    {% include "partials/errors.html" %}
+    <form method="post" action="/auth/login" class="stack">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+      <input type="hidden" name="next_url" value="{{ next_url }}">
+      <label>
+        Email
+        <input type="email" name="email" value="{{ email }}" required autocomplete="email">
+      </label>
+      <label>
+        Пароль
+        <input type="password" name="password" required autocomplete="current-password">
+      </label>
+      <button class="button" type="submit">Войти</button>
+    </form>
+    <p class="auth-switch">Нет аккаунта? <a href="/auth/register">Зарегистрироваться</a></p>
+    <p class="demo-hint">Демо-доступ: <code>demo@example.com</code> / <code>demo12345</code></p>
+  </div>
+</div>
+{% endblock %}

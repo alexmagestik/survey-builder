@@ -1,0 +1,41 @@
+<div class="question-card" data-question>
+  <div class="question-head">
+    <span class="question-number">{{ q_index + 1 }}</span>
+    <input
+      type="text"
+      name="questions-{{ q_index }}-text"
+      value="{{ q.text }}"
+      placeholder="Текст вопроса"
+      maxlength="500"
+      required
+    >
+    <button type="button" class="icon-button remove-question" title="Удалить вопрос" aria-label="Удалить вопрос">×</button>
+  </div>
+
+  <div class="question-settings">
+    <label class="inline-label">
+      Тип
+      <select name="questions-{{ q_index }}-type" class="question-type" aria-label="Тип вопроса">
+        <option value="single" {% if q.type == 'single' %}selected{% endif %}>Один вариант</option>
+        <option value="multiple" {% if q.type == 'multiple' %}selected{% endif %}>Несколько вариантов</option>
+        <option value="text" {% if q.type == 'text' %}selected{% endif %}>Свободный текст</option>
+      </select>
+    </label>
+    <label class="checkbox-row">
+      <input type="checkbox" name="questions-{{ q_index }}-required" value="1" {% if q.required %}checked{% endif %}>
+      <span>Обязательный</span>
+    </label>
+    <label class="checkbox-row">
+      <input type="checkbox" name="questions-{{ q_index }}-allow-other" value="1" {% if q.allow_other %}checked{% endif %}>
+      <span>Свой вариант</span>
+    </label>
+  </div>
+
+  <div class="options-list" data-options>
+    {% for o in q.options %}
+      {% set o_index = loop.index0 %}
+      {% include "partials/option_editor.html" %}
+    {% endfor %}
+  </div>
+  <button type="button" class="button ghost button-small add-option">+ Вариант</button>
+</div>

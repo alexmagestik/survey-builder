@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% block title %}{{ survey.title }} — Survey Builder{% endblock %}
+
+{% block content %}
+<div class="page-head">
+  <div>
+    <h1>{{ survey.title }}</h1>
+    <p class="muted">{{ survey.description or "Без описания" }}</p>
+  </div>
+  <div class="head-actions">
+    <a class="button secondary" href="{{ url_for('survey_stats', survey_id=survey.id) }}">Статистика</a>
+    <a class="button ghost" href="/surveys">К списку</a>
+  </div>
+</div>
+
+<div class="grid two">
+  <section class="card">
+    <h2>Ссылка для респондентов</h2>
+    <p class="muted">Отправьте эту ссылку клиентам. Регистрация не нужна — только имя.</p>
+    <div class="copy-row">
+      <input id="public-link" type="text" readonly value="{{ public_url }}">
+      <button type="button" class="button secondary" data-copy-target="#public-link">Скопировать</button>
+    </div>
+    <div class="survey-meta">
+      <span>{{ response_count }} {{ plural(response_count, 'ответ', 'ответа', 'ответов') }}</span>
+      <span>{{ survey.questions|length }} {{ plural(survey.questions|length, 'вопрос', 'вопроса', 'вопросов') }}</span>
+      {% if survey.scoring_enabled %}<span class="badge">тест с баллами</span>{% endif %}
+    </div>
+    <div class="hero-actions">
+      <a class="button" href="{{ url_for('public_survey', slug=survey.slug) }}">Открыть опрос</a>
+      <a class="button secondary" href="{{ url_for('survey_stats', survey_id=survey.id) }}">Смотреть статистику</a>
+    </div>
+  </section>
+
+  <section class="card danger-card">
+    <h2>Удаление</h2>
+    <p class="muted">Опрос, вопросы и все собранные ответы будут удалены без возможности восстановления.</p>
+    <form method="post" action="{{ url_for('survey_delete', survey_id=survey.id) }}" data-confirm="Удалить опрос и все ответы?">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+      <button type="submit" class="button danger">Удалить опрос</button>
+    </form>
+  </section>
+</div>
+
+<section class="section">
+  <div class="section-head">
+    <h2>Вопросы</h2>
+    <p>Так опрос увидит респондент.</p>
+  </div>
+  <div class="stack">
+    {% for q in survey.questions %}
+      <article class="card question-preview">
+        <div class="question-preview-head">
+          <span class="question-number">{{ loop.index }}</span>
+          <h3>{{ q.text }}</h3>
+          {% if q.required %}<span class="badge">обязательный</span>{% endif %}
+        </div>
+        {% if q.type == 'text' %}
+          <p class="muted">Свободный текстовый ответ</p>
+        {% else %}
+          <div class="preview-options">
+            {% for o in q.options %}
+              <span class="preview-option {% if o.is_correct and survey.scoring_enabled %}correct{% endif %}">
+                {{ o.text }}{% if o.is_correct and survey.scoring_enabled %} ✓{% endif %}
+              </span>
+            {% endfor %}
+            {% if q.allow_other %}<span class="preview-option other">Другое</span>{% endif %}
+          </div>
+          <p class="muted">
+            {% if q.type == 'single' %}Можно выбрать один вариант{% else %}Можно выбрать несколько вариантов{% endif %}
+          </p>
+        {% endif %}
+      </article>
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}

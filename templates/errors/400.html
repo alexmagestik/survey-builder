@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}Ошибка запроса — Survey Builder{% endblock %}
+{% block content %}
+<div class="auth-wrap">
+  <div class="card empty-state">
+    <div class="empty-icon">⚠️</div>
+    <h1>Некорректный запрос</h1>
+    <p>{{ detail or "Проверьте данные формы и попробуйте ещё раз." }}</p>
+    <a class="button" href="/">На главную</a>
+  </div>
+</div>
+{% endblock %}

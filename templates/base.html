@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Survey Builder{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', path='css/style.css') }}">
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="logo" href="/">Survey<span>Builder</span></a>
+      <nav class="main-nav">
+        {% if current_user %}
+          <a href="/surveys">Мои опросы</a>
+          <a href="/surveys/new">Создать опрос</a>
+          <span class="user-email">{{ current_user.email }}</span>
+          <form method="post" action="/auth/logout" class="inline-form">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+            <button class="link-button" type="submit">Выйти</button>
+          </form>
+        {% else %}
+          <a href="/auth/login">Войти</a>
+          <a class="button button-small" href="/auth/register">Регистрация</a>
+        {% endif %}
+      </nav>
+    </div>
+  </header>
+
+  <main class="container main-content">
+    {% include "partials/flash.html" %}
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <span>Survey Builder — мини-SaaS для онлайн-опросов.</span>
+      <span>FastAPI · SQLite · SQLAlchemy · Jinja2</span>
+    </div>
+  </footer>
+
+  <script src="{{ url_for('static', path='js/app.js') }}"></script>
+  {% block scripts %}{% endblock %}
+</body>
+</html>

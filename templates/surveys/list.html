@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block title %}Мои опросы — Survey Builder{% endblock %}
+
+{% block content %}
+<div class="page-head">
+  <div>
+    <h1>Мои опросы</h1>
+    <p class="muted">Создавайте опросы, делитесь ссылкой и смотрите статистику.</p>
+  </div>
+  <a class="button" href="/surveys/new">+ Создать опрос</a>
+</div>
+
+{% if items %}
+  <div class="grid two">
+    {% for item in items %}
+      {% set survey = item.survey %}
+      <article class="card survey-card">
+        <div class="survey-card-head">
+          <h3><a href="{{ url_for('survey_detail', survey_id=survey.id) }}">{{ survey.title }}</a></h3>
+          {% if survey.scoring_enabled %}<span class="badge">тест</span>{% endif %}
+        </div>
+        <p class="muted">{{ survey.description or "Без описания" }}</p>
+        <div class="survey-meta">
+          <span>{{ item.response_count }} {{ plural(item.response_count, 'ответ', 'ответа', 'ответов') }}</span>
+          <span>{{ survey.questions|length }} {{ plural(survey.questions|length, 'вопрос', 'вопроса', 'вопросов') }}</span>
+          <span>{{ survey.created_at.strftime("%d.%m.%Y") }}</span>
+        </div>
+        <div class="survey-actions">
+          <a class="button secondary button-small" href="{{ url_for('public_survey', slug=survey.slug) }}">Открыть</a>
+          <a class="button secondary button-small" href="{{ url_for('survey_stats', survey_id=survey.id) }}">Статистика</a>
+          <a class="button ghost button-small" href="{{ url_for('survey_detail', survey_id=survey.id) }}">Подробнее</a>
+        </div>
+      </article>
+    {% endfor %}
+  </div>
+{% else %}
+  <div class="card empty-state">
+    <div class="empty-icon">📋</div>
+    <h2>Пока нет опросов</h2>
+    <p>Создайте первый опрос вручную или начните с готового шаблона.</p>
+    <a class="button" href="/surveys/new">Создать опрос</a>
+  </div>
+{% endif %}
+{% endblock %}

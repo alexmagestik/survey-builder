@@ -1,0 +1,166 @@
+{% extends "base.html" %}
+{% block title %}Статистика — {{ survey.title }}{% endblock %}
+
+{% block content %}
+<div class="page-head">
+  <div>
+    <h1>Статистика</h1>
+    <p class="muted">{{ survey.title }}</p>
+  </div>
+  <div class="head-actions">
+    <a class="button secondary" href="{{ url_for('public_survey', slug=survey.slug) }}">Открыть опрос</a>
+    <a class="button ghost" href="{{ url_for('survey_detail', survey_id=survey.id) }}">К опросу</a>
+  </div>
+</div>
+
+<div class="stats-grid">
+  <div class="card stat-card">
+    <span>Респондентов</span>
+    <strong>{{ stats.total_responses }}</strong>
+  </div>
+  <div class="card stat-card">
+    <span>Ответов на вопросы</span>
+    <strong>{{ stats.total_answers }}</strong>
+  </div>
+  <div class="card stat-card">
+    <span>Последний ответ</span>
+    <strong class="stat-date">
+      {% if stats.last_response_at %}
+        {{ stats.last_response_at.strftime("%d.%m.%Y %H:%M") }}
+      {% else %}
+        —
+      {% endif %}
+    </strong>
+  </div>
+  {% if survey.scoring_enabled %}
+    <div class="card stat-card">
+      <span>Средний балл</span>
+      <strong>
+        {% if stats.average_score is not none %}
+          {{ "%.1f"|format(stats.average_score) }} / {{ stats.max_score }}
+        {% else %}
+          —
+        {% endif %}
+      </strong>
+    </div>
+  {% endif %}
+</div>
+
+{% if survey.scoring_enabled and stats.score_distribution %}
+  <section class="section">
+    <div class="section-head">
+      <h2>Распределение результатов</h2>
+      <p>Сколько респондентов набрали каждый балл.</p>
+    </div>
+    <div class="card">
+      {% for item in stats.score_distribution %}
+        <div class="bar-row">
+          <div class="bar-label">{{ item.score }} из {{ stats.max_score }}</div>
+          <div class="bar-track">
+            <div class="bar-fill" style="width: {{ '%.1f'|format(item.percent) }}%"></div>
+          </div>
+          <div class="bar-value">{{ item.count }} ({{ "%.1f"|format(item.percent) }}%)</div>
+        </div>
+      {% endfor %}
+    </div>
+  </section>
+{% endif %}
+
+<section class="section">
+  <div class="section-head">
+    <h2>По вопросам</h2>
+    <p>
+      Распределение вариантов и текстовые ответы. Для вопросов с несколькими
+      вариантами проценты считаются от числа ответивших, поэтому сумма может
+      превышать 100%.
+    </p>
+  </div>
+  <div class="stack">
+    {% for item in stats.questions %}
+      {% set q = item.question %}
+      <article class="card question-stat">
+        <div class="question-stat-head">
+          <h3>{{ loop.index }}. {{ q.text }}</h3>
+          <span class="muted">Ответили: {{ item.answered }}</span>
+        </div>
+
+        {% if item.is_scored %}
+          <p class="score-line">
+            Правильно: <strong>{{ item.correct_count }}</strong> из {{ item.answered }}
+            ({{ "%.1f"|format(item.correct_percent) }}%)
+          </p>
+        {% endif %}
+
+        {% if q.type == 'text' %}
+          {% if item.text_answers %}
+            <ul class="text-answers">
+              {% for answer in item.text_answers %}
+                <li>{{ answer }}</li>
+              {% endfor %}
+            </ul>
+          {% else %}
+            <p class="muted">Пока нет текстовых ответов.</p>
+          {% endif %}
+        {% else %}
+          <div class="bars">
+            {% for o in item.options %}
+              <div class="bar-row">
+                <div class="bar-label">{{ o.text }}</div>
+                <div class="bar-track">
+                  <div class="bar-fill" style="width: {{ '%.1f'|format(o.percent) }}%"></div>
+                </div>
+                <div class="bar-value">{{ o.count }} ({{ "%.1f"|format(o.percent) }}%)</div>
+              </div>
+            {% endfor %}
+          </div>
+          {% if item.other_answers %}
+            <div class="other-answers">
+              <h4>Свои варианты</h4>
+              <ul>
+                {% for answer in item.other_answers %}
+                  <li>{{ answer }}</li>
+                {% endfor %}
+              </ul>
+            </div>
+          {% endif %}
+        {% endif %}
+      </article>
+    {% endfor %}
+  </div>
+</section>
+
+<section class="section">
+  <div class="section-head">
+    <h2>Последние ответы</h2>
+    <p>10 последних отправок с расшифровкой.</p>
+  </div>
+  {% if stats.last_responses %}
+    <div class="stack">
+      {% for r in stats.last_responses %}
+        <article class="card response-card">
+          <div class="response-head">
+            <strong>{{ r.name }}</strong>
+            <span class="muted">{{ r.created_at.strftime("%d.%m.%Y %H:%M") }}</span>
+            {% if r.score is not none %}
+              <span class="badge">{{ r.score }} / {{ r.max_score }}</span>
+            {% endif %}
+          </div>
+          <ul class="response-answers">
+            {% for a in r.answers %}
+              <li>
+                <span class="answer-question">{{ a.question }}</span>
+                <span class="answer-value">{{ a["values"]|join(", ") }}</span>
+              </li>
+            {% endfor %}
+          </ul>
+        </article>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="card empty-state">
+      <h2>Ответов пока нет</h2>
+      <p>Отправьте ссылку респондентам — статистика появится здесь.</p>
+    </div>
+  {% endif %}
+</section>
+{% endblock %}

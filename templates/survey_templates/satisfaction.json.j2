@@ -1,0 +1,53 @@
+{% set scale = ["1 — очень плохо", "2 — плохо", "3 — нейтрально", "4 — хорошо", "5 — отлично"] %}
+{
+  "key": "satisfaction",
+  "name": "Опрос удовлетворённости",
+  "title": {{ "Оценка удовлетворённости обслуживанием" | tojson }},
+  "description": {{ "Помогите нам стать лучше: ответьте на несколько вопросов о качестве сервиса." | tojson }},
+  "scoring": false,
+  "questions": [
+    {
+      "text": {{ "Насколько вы удовлетворены нашим сервисом в целом?" | tojson }},
+      "type": "single",
+      "required": true,
+      "allow_other": false,
+      "options": [
+        {% for item in scale %}
+        {"text": {{ item | tojson }}, "correct": false}{% if not loop.last %},{% endif %}
+        {% endfor %}
+      ]
+    },
+    {
+      "text": {{ "Что вам понравилось больше всего?" | tojson }},
+      "type": "multiple",
+      "required": true,
+      "allow_other": true,
+      "options": [
+        {"text": {{ "Скорость обслуживания" | tojson }}, "correct": false},
+        {"text": {{ "Качество консультации" | tojson }}, "correct": false},
+        {"text": {{ "Удобство сайта" | tojson }}, "correct": false},
+        {"text": {{ "Цена" | tojson }}, "correct": false},
+        {"text": {{ "Ассортимент" | tojson }}, "correct": false}
+      ]
+    },
+    {
+      "text": {{ "Что нам стоит улучшить?" | tojson }},
+      "type": "text",
+      "required": false,
+      "allow_other": false,
+      "options": []
+    },
+    {
+      "text": {{ "Порекомендуете нас друзьям?" | tojson }},
+      "type": "single",
+      "required": true,
+      "allow_other": false,
+      "options": [
+        {"text": {{ "Да" | tojson }}, "correct": false},
+        {"text": {{ "Скорее да" | tojson }}, "correct": false},
+        {"text": {{ "Скорее нет" | tojson }}, "correct": false},
+        {"text": {{ "Нет" | tojson }}, "correct": false}
+      ]
+    }
+  ]
+}

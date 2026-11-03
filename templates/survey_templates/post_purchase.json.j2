@@ -1,0 +1,75 @@
+{% set quality = ["1 — очень плохо", "2 — плохо", "3 — нормально", "4 — хорошо", "5 — отлично"] %}
+{
+  "key": "post_purchase",
+  "name": "Анкета после покупки",
+  "title": {{ "Анкета после покупки" | tojson }},
+  "description": {{ "Расскажите, как прошла покупка и доставка. Это займёт около двух минут." | tojson }},
+  "scoring": false,
+  "questions": [
+    {
+      "text": {{ "Какую категорию товара вы приобрели?" | tojson }},
+      "type": "single",
+      "required": true,
+      "allow_other": true,
+      "options": [
+        {"text": {{ "Электроника" | tojson }}, "correct": false},
+        {"text": {{ "Одежда и обувь" | tojson }}, "correct": false},
+        {"text": {{ "Дом и сад" | tojson }}, "correct": false},
+        {"text": {{ "Красота и здоровье" | tojson }}, "correct": false}
+      ]
+    },
+    {
+      "text": {{ "Как быстро вы получили заказ?" | tojson }},
+      "type": "single",
+      "required": true,
+      "allow_other": false,
+      "options": [
+        {"text": {{ "В день заказа" | tojson }}, "correct": false},
+        {"text": {{ "1–2 дня" | tojson }}, "correct": false},
+        {"text": {{ "3–5 дней" | tojson }}, "correct": false},
+        {"text": {{ "Больше 5 дней" | tojson }}, "correct": false}
+      ]
+    },
+    {
+      "text": {{ "Оцените качество товара" | tojson }},
+      "type": "single",
+      "required": true,
+      "allow_other": false,
+      "options": [
+        {% for item in quality %}
+        {"text": {{ item | tojson }}, "correct": false}{% if not loop.last %},{% endif %}
+        {% endfor %}
+      ]
+    },
+    {
+      "text": {{ "С какими проблемами вы столкнулись?" | tojson }},
+      "type": "multiple",
+      "required": false,
+      "allow_other": true,
+      "options": [
+        {"text": {{ "Повреждена упаковка" | tojson }}, "correct": false},
+        {"text": {{ "Пришёл не тот товар" | tojson }}, "correct": false},
+        {"text": {{ "Долгая доставка" | tojson }}, "correct": false},
+        {"text": {{ "Проблемы с оплатой" | tojson }}, "correct": false},
+        {"text": {{ "Не было проблем" | tojson }}, "correct": false}
+      ]
+    },
+    {
+      "text": {{ "Что мы можем улучшить?" | tojson }},
+      "type": "text",
+      "required": false,
+      "allow_other": false,
+      "options": []
+    },
+    {
+      "text": {{ "Можно ли связаться с вами для уточнения?" | tojson }},
+      "type": "single",
+      "required": false,
+      "allow_other": false,
+      "options": [
+        {"text": {{ "Да" | tojson }}, "correct": false},
+        {"text": {{ "Нет" | tojson }}, "correct": false}
+      ]
+    }
+  ]
+}

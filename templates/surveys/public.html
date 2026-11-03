@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block title %}{{ survey.title }} — Survey Builder{% endblock %}
+
+{% block content %}
+<div class="public-wrap">
+  <div class="card public-card">
+    <div class="public-header">
+      {% if survey.scoring_enabled %}<span class="badge">тест</span>{% endif %}
+      <h1>{{ survey.title }}</h1>
+      {% if survey.description %}<p class="lead">{{ survey.description }}</p>{% endif %}
+      <p class="muted">Поля со звёздочкой обязательны. Регистрация не нужна.</p>
+    </div>
+
+    {% include "partials/errors.html" %}
+
+    <form method="post" action="{{ url_for('public_survey_submit', slug=survey.slug) }}" class="stack">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+
+      <label>
+        Ваше имя <span class="required-mark">*</span>
+        <input
+          type="text"
+          name="respondent_name"
+          value="{{ submitted['name'] if submitted else '' }}"
+          placeholder="Как к вам обращаться"
+          maxlength="120"
+          required
+          autocomplete="name"
+        >
+      </label>
+
+      {% for q in survey.questions %}
+        {% set q_index = loop.index %}
+        {% include "partials/question_public.html" %}
+      {% endfor %}
+
+      <button type="submit" class="button button-wide">Отправить ответы</button>
+    </form>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% block title %}Survey Builder — онлайн-опросы за пару минут{% endblock %}
+
+{% block content %}
+<section class="hero">
+  <div class="hero-text">
+    <span class="eyebrow">Мини-SaaS для обратной связи</span>
+    <h1>Создайте опрос, отправьте ссылку, получите статистику</h1>
+    <p class="lead">
+      Анкеты, тесты и голосования с уникальными ссылками. Респондентам не нужна
+      регистрация — только имя. Ответы и распределение вариантов собираются автоматически.
+    </p>
+    <div class="hero-actions">
+      {% if current_user %}
+        <a class="button" href="/surveys/new">Создать опрос</a>
+        <a class="button secondary" href="/surveys">Мои опросы</a>
+      {% else %}
+        <a class="button" href="/auth/register">Начать бесплатно</a>
+        <a class="button secondary" href="/auth/login">Войти</a>
+      {% endif %}
+    </div>
+  </div>
+  <div class="hero-card">
+    <div class="mini-survey">
+      <span class="mini-badge">Пример ссылки</span>
+      <code>/survey/a82jd92k</code>
+      <div class="mini-question">Насколько вы довольны сервисом?</div>
+      <div class="mini-option">😊 Очень доволен</div>
+      <div class="mini-option">🙂 Доволен</div>
+      <div class="mini-option">😐 Нейтрально</div>
+      <div class="mini-progress"><span style="width: 72%"></span></div>
+      <small>72% выбрали положительную оценку</small>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="section-head">
+    <h2>Готовые шаблоны</h2>
+    <p>Начните с шаблона и поправьте вопросы под себя.</p>
+  </div>
+  <div class="grid three">
+    {% for t in templates_list %}
+      <article class="card template-card">
+        <div class="template-icon">{{ t.icon }}</div>
+        <h3>{{ t.name }}</h3>
+        <p>{{ t.description }}</p>
+        <div class="template-meta">
+          <span>{{ t.question_count }} {{ plural(t.question_count, 'вопрос', 'вопроса', 'вопросов') }}</span>
+          {% if t.scoring %}<span class="badge">с баллами</span>{% endif %}
+        </div>
+        <a class="button secondary button-small" href="/surveys/new?template={{ t.key }}">Использовать</a>
+      </article>
+    {% endfor %}
+  </div>
+</section>
+
+<section class="section">
+  <div class="grid three features">
+    <div class="feature">
+      <h3>Уникальная ссылка</h3>
+      <p>Каждый опрос получает короткий адрес вида <code>/survey/a82jd92k</code>.</p>
+    </div>
+    <div class="feature">
+      <h3>Ответы в SQLite</h3>
+      <p>Опросы, вопросы, варианты и ответы хранятся в базе через SQLAlchemy.</p>
+    </div>
+    <div class="feature">
+      <h3>Статистика сразу</h3>
+      <p>Количество ответов, распределение вариантов и последние отправки.</p>
+    </div>
+  </div>
+</section>
+{% endblock %}

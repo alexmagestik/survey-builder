@@ -1,0 +1,114 @@
+{% extends "base.html" %}
+{% block title %}Новый опрос — Survey Builder{% endblock %}
+
+{% block content %}
+<div class="page-head">
+  <div>
+    <h1>Новый опрос</h1>
+    <p class="muted">Заполните название, описание и вопросы. Ссылка создастся автоматически.</p>
+  </div>
+  <a class="button ghost" href="/surveys">К списку</a>
+</div>
+
+<section class="section compact">
+  <div class="section-head">
+    <h2>Начать с шаблона</h2>
+    <p>Шаблон заполнит конструктор — потом всё можно поправить.</p>
+  </div>
+  <div class="grid three">
+    {% for t in templates_list %}
+      <article class="card template-card {% if selected_template == t.key %}selected{% endif %}">
+        <div class="template-icon">{{ t.icon }}</div>
+        <h3>{{ t.name }}</h3>
+        <p>{{ t.description }}</p>
+        <div class="template-meta">
+          <span>{{ t.question_count }} {{ plural(t.question_count, 'вопрос', 'вопроса', 'вопросов') }}</span>
+          {% if t.scoring %}<span class="badge">с баллами</span>{% endif %}
+        </div>
+        <a class="button secondary button-small" href="/surveys/new?template={{ t.key }}">Заполнить</a>
+      </article>
+    {% endfor %}
+  </div>
+</section>
+
+{% include "partials/errors.html" %}
+
+<form method="post" action="/surveys" id="survey-form" class="stack card builder-card" novalidate>
+  <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+
+  <label>
+    Название опроса
+    <input type="text" name="title" value="{{ form.title }}" placeholder="Например, Оценка обслуживания" maxlength="200" required>
+  </label>
+
+  <label>
+    Описание
+    <textarea name="description" rows="3" maxlength="2000" placeholder="Зачем этот опрос и что вы хотите узнать">{{ form.description }}</textarea>
+  </label>
+
+  <label class="checkbox-row scoring-row">
+    <input type="checkbox" name="scoring_enabled" value="1" id="scoring-toggle" {% if form.scoring_enabled %}checked{% endif %}>
+    <span>Это тест с правильными ответами</span>
+  </label>
+  <p class="hint">Для теста отметьте правильные варианты галочкой «верный». За каждый вопрос с выбором даётся один балл.</p>
+
+  <div id="questions" data-questions>
+    {% for q in form.questions %}
+      {% set q_index = loop.index0 %}
+      {% include "partials/question_editor.html" %}
+    {% endfor %}
+  </div>
+
+  <button type="button" class="button secondary" id="add-question">+ Добавить вопрос</button>
+
+  <div class="form-actions">
+    <button type="submit" class="button">Создать опрос</button>
+    <a class="button ghost" href="/surveys">Отмена</a>
+  </div>
+</form>
+
+<template id="question-template">
+  <div class="question-card" data-question>
+    <div class="question-head">
+      <span class="question-number"></span>
+      <input type="text" name="questions-0-text" placeholder="Текст вопроса" aria-label="Текст вопроса" maxlength="500" required>
+      <button type="button" class="icon-button remove-question" title="Удалить вопрос" aria-label="Удалить вопрос">×</button>
+    </div>
+    <div class="question-settings">
+      <label class="inline-label">
+        Тип
+        <select name="questions-0-type" class="question-type" aria-label="Тип вопроса">
+          <option value="single">Один вариант</option>
+          <option value="multiple">Несколько вариантов</option>
+          <option value="text">Свободный текст</option>
+        </select>
+      </label>
+      <label class="checkbox-row">
+        <input type="checkbox" name="questions-0-required" value="1" checked>
+        <span>Обязательный</span>
+      </label>
+      <label class="checkbox-row">
+        <input type="checkbox" name="questions-0-allow-other" value="1">
+        <span>Свой вариант</span>
+      </label>
+    </div>
+    <div class="options-list" data-options></div>
+    <button type="button" class="button ghost button-small add-option">+ Вариант</button>
+  </div>
+</template>
+
+<template id="option-template">
+  <div class="option-row" data-option>
+    <input type="text" name="questions-0-options-0-text" placeholder="Вариант ответа" aria-label="Вариант ответа" maxlength="200">
+    <label class="correct-toggle" title="Правильный ответ">
+      <input type="checkbox" name="questions-0-options-0-correct" value="1" aria-label="Правильный вариант">
+      <span>верный</span>
+    </label>
+    <button type="button" class="icon-button remove-option" title="Удалить вариант" aria-label="Удалить вариант">×</button>
+  </div>
+</template>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', path='js/builder.js') }}"></script>
+{% endblock %}

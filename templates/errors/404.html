@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}Страница не найдена — Survey Builder{% endblock %}
+{% block content %}
+<div class="auth-wrap">
+  <div class="card empty-state">
+    <div class="empty-icon">🔍</div>
+    <h1>Страница не найдена</h1>
+    <p>{{ detail or "Возможно, ссылка устарела или опрос был удалён." }}</p>
+    <a class="button" href="/">На главную</a>
+  </div>
+</div>
+{% endblock %}

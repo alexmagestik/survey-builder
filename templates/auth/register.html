@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}Регистрация — Survey Builder{% endblock %}
+
+{% block content %}
+<div class="auth-wrap">
+  <div class="card auth-card">
+    <h1>Регистрация</h1>
+    <p class="muted">Создайте аккаунт создателя опросов. Респондентам регистрация не нужна.</p>
+    {% include "partials/errors.html" %}
+    <form method="post" action="/auth/register" class="stack">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+      <label>
+        Email
+        <input type="email" name="email" value="{{ email }}" required autocomplete="email">
+      </label>
+      <label>
+        Пароль
+        <input type="password" name="password" required minlength="8" autocomplete="new-password">
+        <small class="hint">Минимум 8 символов.</small>
+      </label>
+      <label>
+        Повторите пароль
+        <input type="password" name="password_confirm" required minlength="8" autocomplete="new-password">
+      </label>
+      <button class="button" type="submit">Создать аккаунт</button>
+    </form>
+    <p class="auth-switch">Уже есть аккаунт? <a href="/auth/login">Войти</a></p>
+  </div>
+</div>
+{% endblock %}

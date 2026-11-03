@@ -1,0 +1,21 @@
+<div class="option-row" data-option>
+  <input
+    type="text"
+    name="questions-{{ q_index }}-options-{{ o_index }}-text"
+    value="{{ o.text }}"
+    placeholder="Вариант ответа"
+    aria-label="Вариант ответа"
+    maxlength="200"
+  >
+  <label class="correct-toggle" title="Правильный ответ">
+    <input
+      type="checkbox"
+      name="questions-{{ q_index }}-options-{{ o_index }}-correct"
+      value="1"
+      aria-label="Правильный вариант"
+      {% if o.correct %}checked{% endif %}
+    >
+    <span>верный</span>
+  </label>
+  <button type="button" class="icon-button remove-option" title="Удалить вариант" aria-label="Удалить вариант">×</button>
+</div>
